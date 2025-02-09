@@ -40,6 +40,17 @@ const showingNavigationDropdown = ref(false);
                                     Dashboard
                                 </NavLink>
                             </div>
+
+                            <div
+                                class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex"
+                            >
+                                <NavLink
+                                    :href="route('dashboard.selenium-drivers')"
+                                    :active="route().current('dashboard.selenium-drivers')"
+                                >
+                                    Selenium Drivers
+                                </NavLink>
+                            </div>
                         </div>
 
                         <div class="hidden sm:ms-6 sm:flex sm:items-center">
@@ -145,6 +156,14 @@ const showingNavigationDropdown = ref(false);
                             :active="route().current('dashboard')"
                         >
                             Dashboard
+                        </ResponsiveNavLink>
+                    </div>
+                    <div class="space-y-1 pb-3 pt-2">
+                        <ResponsiveNavLink
+                            :href="route('dashboard.selenium-drivers')"
+                            :active="route().current('dashboard.selenium-drivers')"
+                        >
+                            Selenium Drivers
                         </ResponsiveNavLink>
                     </div>
 

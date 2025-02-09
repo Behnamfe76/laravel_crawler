@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\SeleniumDriverController as SeleniumDriverControllerAlias;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -17,6 +18,13 @@ Route::get('/', function () {
 Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
+
+Route::prefix('/dashboard')->name('dashboard')->group( function () {
+    Route::get('/selenium-drivers', [SeleniumDriverControllerAlias::class, 'index'])->name('.selenium-drivers');
+    Route::get('/define-drivers', [SeleniumDriverControllerAlias::class, 'defineDrivers'])->name('.define-drivers');
+    Route::post('/store-drivers', [SeleniumDriverControllerAlias::class, 'storeDrivers'])->name('.store-drivers');
+    Route::post('/check-driver-status', [SeleniumDriverControllerAlias::class, 'checkDriverStatus'])->name('.check-driver-status');
+})->middleware(['auth']);
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
