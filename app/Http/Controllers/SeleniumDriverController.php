@@ -120,12 +120,15 @@ class SeleniumDriverController extends Controller
         $port = $request->driverPort;
         $host = $request->driverHost;
 
-        $driverEntity = DB::table('selenium_drivers')->where('port', $port)->where('host', $host)->first();
-        $isWorking = $driverEntity->is_working;
+        $driverEntity = SeleniumDriver::where('port', $port)->where('host', $host)->first();
+        $isWorking = $driverEntity->getIsWorking();
 
-        if (!$isWorking) {
-            return response()->json('not working', 422);
-        }
-        return response()->json('is working', 200);
+
+        return response()->json([
+            'isWorking' => $isWorking,
+            'workingSubject' => $driverEntity->getWorkingSubject(),
+            'duration' => $driverEntity->getDuration(),
+            'lastUsage' => $driverEntity->getLastUsage(),
+        ], 200);
     }
 }

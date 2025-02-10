@@ -26,13 +26,35 @@ class SeleniumDriver extends Model
         return "{$host}:{$port}";
     }
 
+    public function setLastUsage(string $lastUsage): void
+    {
+        $this->last_usage = $lastUsage;
+        $this->save();
+    }
+
+    public function getLastUsage()
+    {
+        return $this->last_usage;
+    }
+
+    public function setDuration($duration): void
+    {
+        $this->duration = $duration;
+        $this->save();
+    }
+
+    public function getDuration()
+    {
+        return $this->duration;
+    }
+
     public function setWorkingSubject(string $workingSubject): void
     {
         $this->working_subject = $workingSubject;
         $this->save();
     }
 
-    public function getWorkingSubject(): string
+    public function getWorkingSubject(): string|null
     {
         return $this->working_subject;
     }
@@ -95,7 +117,8 @@ class SeleniumDriver extends Model
     {
         return [
             'working_data' => 'array',
-            'port' => 'int'
+            'port' => 'int',
+            'duration' => 'int',
         ];
     }
 }

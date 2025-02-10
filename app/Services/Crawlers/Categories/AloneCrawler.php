@@ -52,7 +52,14 @@ class AloneCrawler implements CategoriesCrawlerContract
 
             $categories = $this->fetchCategories($params['merchant_url'], $params, $slug);
 
+            if (!is_array($categories)) {
+                throw new \Exception("Failed to fetch categories.");
+            }
+
             $endAt = Carbon::now();
+            $duration = $startedAt->diffInRealSeconds($endAt);
+
+
             $this->driverEntity->setWorkingData([
                 'crawling_type' => 'crawling',
                 'crawling_subject' => 'categories',
@@ -60,7 +67,7 @@ class AloneCrawler implements CategoriesCrawlerContract
                 'merchant' => $params['merchant_id'],
                 'started_at' => $startedAt,
                 'end_at' => $endAt,
-                'duration' => $startedAt->diffInSeconds($endAt),
+                'duration' => $duration,
                 'numberOfCrawledCategories' => count($categories),
                 'job' => $job
             ]);
@@ -69,13 +76,20 @@ class AloneCrawler implements CategoriesCrawlerContract
                 'categories' => $categories,
                 'reports' => $this->driverEntity->getWorkingData()
             ], $slug);
-
-            $this->driverEntity->setIsWorking(false);
-            $driver = $this->driver->get();
-            $driver->close();
-
         } catch (\Throwable $tr) {
             Log::error($tr->getMessage());
+        } finally {
+            // Ensure the driver is reset even if an error occurs
+            $this->driverEntity->setIsWorking(false);
+            $this->driverEntity->setDuration($duration);
+            $this->driverEntity->setLastUsage($startedAt);
+
+            if ($this->driver) {
+                $driver = $this->driver->get();
+                if ($driver) {
+                    $driver->close();
+                }
+            }
         }
     }
 
@@ -94,6 +108,10 @@ class AloneCrawler implements CategoriesCrawlerContract
             $categories = $this->fetchCategories($params['merchant_url'], $params, $slug);
 
             $endAt = Carbon::now();
+            $duration = $startedAt->diffInSeconds($endAt);
+            $this->driverEntity->setDuration($duration);
+            $this->driverEntity->setLastUsage($startedAt);
+
             $this->driverEntity->setWorkingData([
                 'crawling_type' => 'testing',
                 'crawling_subject' => 'categories',
@@ -101,7 +119,7 @@ class AloneCrawler implements CategoriesCrawlerContract
                 'merchant' => $params['merchant_id'],
                 'started_at' => $startedAt,
                 'end_at' => $endAt,
-                'duration' => $startedAt->diffInSeconds($endAt),
+                'duration' => $duration,
                 'numberOfCrawledCategories' => count($categories),
             ]);
 
@@ -111,6 +129,7 @@ class AloneCrawler implements CategoriesCrawlerContract
 
             return $this->driverEntity->getWorkingData();
         } catch (\Throwable $tr) {
+            dd($tr->getMessage());
             return $tr;
         }
     }

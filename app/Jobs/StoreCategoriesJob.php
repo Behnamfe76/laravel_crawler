@@ -20,7 +20,10 @@ class StoreCategoriesJob implements ShouldQueue
         $this->validated = $validated;
         $this->generatedSlug = $generatedSlug;
     }
-
+    public function getData()
+    {
+        return $this->validated;
+    }
     public function handle(): void
     {
         ini_set('max_execution_time', 0);

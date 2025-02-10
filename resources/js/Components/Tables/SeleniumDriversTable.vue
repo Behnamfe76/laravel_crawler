@@ -6,6 +6,7 @@ import axios from "axios";
 import GreenBadge from "@/Components/Badges/GreenBadge.vue";
 import RedBadge from "@/Components/Badges/RedBadge.vue";
 import { router } from "@inertiajs/vue3";
+import moment from "moment";
 const props = defineProps(['drivers'])
 const statuses = {active: 'text-green-400 bg-green-400/10', inactive: 'text-rose-400 bg-rose-400/10'}
 const activityItems = [
@@ -147,7 +148,10 @@ const checkWebDriverWorking = async () => {
                 driverHost: item.host
             });
             if (response.status === 200) {
-                item.isWorking = true;
+                item.isWorking = response.data.isWorking;
+                item.working = response.data.workingSubject;
+                item.duration = response.data.duration;
+                item.lastUsage = response.data.lastUsage;
             }
         } catch (error) {
             console.error(error.response.data);
@@ -186,7 +190,7 @@ onBeforeMount(() => {
                 working: item.working_subject,
                 status: 'must check',
                 duration: item.duration,
-                lastUsed: item.last_used,
+                lastUsage: item.last_usage,
                 driverUrl: item.driver_url,
                 port: item.port,
                 host: item.host,
@@ -242,7 +246,7 @@ onBeforeMount(() => {
                     <th scope="col" class="hidden py-2 pr-8 pl-0 font-semibold md:table-cell lg:pr-20">Duration</th>
                     <!-- User at -->
                     <th scope="col" class="hidden py-2 pr-4 pl-0 font-semibold sm:table-cell sm:pr-6 lg:pr-8">
-                        Used at
+                        Last Usage
                     </th>
                 </tr>
             </thead>
@@ -297,9 +301,11 @@ onBeforeMount(() => {
                             0s
                         </span>
                     </td>
-                    <!-- User at -->
+                    <!-- Used at -->
                     <td class="hidden py-4 pr-4 pl-0 text-sm/6 text-gray-400 sm:table-cell sm:pr-6 lg:pr-8">
-                        <time v-if="item.lastUsed" :datetime="item.lastUsed">{{ item.lastUsed }}</time>
+                        <time v-if="item.lastUsage" :datetime="item.lastUsage">
+                            {{ moment(item.lastUsage).fromNow() }}
+                        </time>
                         <span v-else>
                             not used yet
                         </span>
