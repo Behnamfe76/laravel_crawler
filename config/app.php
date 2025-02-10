@@ -123,4 +123,18 @@ return [
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
 
+    /*
+     | --------------------------------------------------------------------------
+     | RabbitMQ Configuration
+     | --------------------------------------------------------------------------
+     |
+     | These configuration options determine the RabbitMQ connection settings.
+     */
+    'rabbitmq' => [
+        'host' => env('RABBITMQ_HOST', 'localhost'),
+        'port' => env('RABBITMQ_PORT', 5672),
+        'user' => env('RABBITMQ_LOGIN', 'guest'),
+        'password' => env('RABBITMQ_PASSWORD', 'guest'),
+        'vhost' => env('RABBITMQ_VHOST', '/'),
+    ],
 ];
