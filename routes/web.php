@@ -24,6 +24,9 @@ Route::prefix('/dashboard')->name('dashboard')->group( function () {
     Route::get('/define-drivers', [SeleniumDriverControllerAlias::class, 'defineDrivers'])->name('.define-drivers');
     Route::post('/store-drivers', [SeleniumDriverControllerAlias::class, 'storeDrivers'])->name('.store-drivers');
     Route::post('/check-driver-status', [SeleniumDriverControllerAlias::class, 'checkDriverStatus'])->name('.check-driver-status');
+    Route::post('/reset-drivers', [SeleniumDriverControllerAlias::class, 'resetDrivers'])->name('.reset-drivers');
+    Route::post('/check-driver-alive', [SeleniumDriverControllerAlias::class, 'checkDriversAlive'])->name('.check-driver-alive');
+    Route::post('/check-driver-working', [SeleniumDriverControllerAlias::class, 'checkDriversWorking'])->name('.check-driver-working');
 })->middleware(['auth']);
 
 Route::middleware('auth')->group(function () {

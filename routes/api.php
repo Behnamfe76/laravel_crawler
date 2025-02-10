@@ -1,8 +1,12 @@
 <?php
 
-use Illuminate\Http\Request;
+use App\Http\Controllers\v1\CrawlerApiController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/user', function (Request $request) {
-    return $request->user();
-})->middleware('auth:sanctum');
+
+Route::prefix('/v1')->group(function () {
+    Route::prefix('/get-categories')->group(callback: function () {
+        Route::post('/testing', [CrawlerApiController::class, 'getCategoriesTesting']);
+        Route::post('/crawling', [CrawlerApiController::class, 'getCategoriesCrawling']);
+    });
+});

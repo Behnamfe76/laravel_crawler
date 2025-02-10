@@ -3,7 +3,6 @@
 namespace Database\Seeders;
 
 use App\Models\SeleniumDriver;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class SeleniumDriverSeeder extends Seeder

@@ -17,9 +17,13 @@ return new class extends Migration
             $table->string('duration')->nullable();
             $table->string('host');
             $table->string('port');
+            $table->string('working_subject')->nullable();
             $table->string('browser')->default('chrome');
             $table->string('version')->nullable()->default('latest');
             $table->string('status')->default('active');
+            $table->boolean('is_working')->default(false);
+            $table->boolean('is_alive')->default(false);
+            $table->json('working_data')->nullable();
             $table->timestamp('last_usage')->nullable();
             $table->timestamps();
         });
