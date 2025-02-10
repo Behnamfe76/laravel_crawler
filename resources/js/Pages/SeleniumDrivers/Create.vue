@@ -10,7 +10,7 @@ const form = useForm({
     port: null,
 });
 const submitForm = () => {
-    form.post(route('dashboard.store-drivers'), {
+    form.post(route('dashboard.selenium-drivers.store'), {
         onError: (error) => {
             console.log(error)
         }

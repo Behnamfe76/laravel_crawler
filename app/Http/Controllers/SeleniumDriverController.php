@@ -17,11 +17,36 @@ class SeleniumDriverController extends Controller
             'drivers' => SeleniumDriver::all()
         ]);
     }
-    public function defineDrivers(): \Inertia\Response
+    public function create(): \Inertia\Response
     {
         return Inertia::render('SeleniumDrivers/Create');
     }
-    public function storeDrivers(Request $request): \Illuminate\Http\RedirectResponse
+    public function edit(int $driverId): \Inertia\Response
+    {
+        $driver = SeleniumDriver::findOrFail($driverId);
+
+        return Inertia::render('SeleniumDrivers/Edit', [
+            'driver' => $driver
+        ]);
+    }
+    public function update(Request $request, int $driverId)
+    {
+        $request->validate([
+            'driverName' => 'required',
+            'host' => 'required',
+            'port' => 'required',
+        ]);
+
+        SeleniumDriver::findOrFail($driverId)
+            ->update([
+                'name' => $request->driverName,
+                'host' => $request->host,
+                'port' => $request->port,
+            ]);
+
+        return redirect()->route('dashboard.selenium-drivers.index');
+    }
+    public function store(Request $request): \Illuminate\Http\RedirectResponse
     {
         $request->validate([
             'driverName' => 'required',
@@ -35,7 +60,7 @@ class SeleniumDriverController extends Controller
             'port' => $request->port,
         ]);
 
-        return redirect()->route('dashboard.selenium-drivers');
+        return redirect()->route('dashboard.selenium-drivers.index');
     }
     public function checkDriverStatus(Request $request): \Illuminate\Http\JsonResponse
     {

@@ -67,7 +67,7 @@ const showAlert = async () => {
 
                     <div class="p-6 text-gray-900 dark:text-gray-100">
                         <div class="mb-4 flex gap-2">
-                            <primary-button-dark @click="router.get(route('dashboard.define-drivers'))">
+                            <primary-button-dark @click="router.get(route('dashboard.selenium-drivers.create'))">
                                 Define New Driver
                             </primary-button-dark>
                             <button-danger @click="showAlert">

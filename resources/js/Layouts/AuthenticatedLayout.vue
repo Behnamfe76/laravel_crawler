@@ -45,8 +45,8 @@ const showingNavigationDropdown = ref(false);
                                 class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex"
                             >
                                 <NavLink
-                                    :href="route('dashboard.selenium-drivers')"
-                                    :active="route().current('dashboard.selenium-drivers')"
+                                    :href="route('dashboard.selenium-drivers.index')"
+                                    :active="route().current('dashboard.selenium-drivers.index')"
                                 >
                                     Selenium Drivers
                                 </NavLink>
@@ -160,8 +160,8 @@ const showingNavigationDropdown = ref(false);
                     </div>
                     <div class="space-y-1 pb-3 pt-2">
                         <ResponsiveNavLink
-                            :href="route('dashboard.selenium-drivers')"
-                            :active="route().current('dashboard.selenium-drivers')"
+                            :href="route('dashboard.selenium-drivers.index')"
+                            :active="route().current('dashboard.selenium-drivers.index')"
                         >
                             Selenium Drivers
                         </ResponsiveNavLink>

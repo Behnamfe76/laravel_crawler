@@ -19,10 +19,8 @@ Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
-Route::prefix('/dashboard')->name('dashboard')->group( function () {
-    Route::get('/selenium-drivers', [SeleniumDriverControllerAlias::class, 'index'])->name('.selenium-drivers');
-    Route::get('/define-drivers', [SeleniumDriverControllerAlias::class, 'defineDrivers'])->name('.define-drivers');
-    Route::post('/store-drivers', [SeleniumDriverControllerAlias::class, 'storeDrivers'])->name('.store-drivers');
+Route::prefix('/dashboard')->name('dashboard.')->group(function () {
+    Route::resource('/selenium-drivers', SeleniumDriverControllerAlias::class);
     Route::post('/check-driver-status', [SeleniumDriverControllerAlias::class, 'checkDriverStatus'])->name('.check-driver-status');
     Route::post('/reset-drivers', [SeleniumDriverControllerAlias::class, 'resetDrivers'])->name('.reset-drivers');
     Route::post('/check-driver-alive', [SeleniumDriverControllerAlias::class, 'checkDriversAlive'])->name('.check-driver-alive');
@@ -35,4 +33,4 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';
