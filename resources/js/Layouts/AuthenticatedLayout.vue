@@ -58,7 +58,7 @@ const showingNavigationDropdown = ref(false);
                                     :href="route('dashboard.jobs.index')"
                                     :active="route().current('dashboard.jobs.index')"
                                 >
-                                    Selenium Drivers
+                                    Jobs
                                 </NavLink>
                             </div>
                         </div>
@@ -181,7 +181,7 @@ const showingNavigationDropdown = ref(false);
                             :href="route('dashboard.jobs.index')"
                             :active="route().current('dashboard.jobs.index')"
                         >
-                            Selenium Drivers
+                            Jobs
                         </ResponsiveNavLink>
                     </div>
 

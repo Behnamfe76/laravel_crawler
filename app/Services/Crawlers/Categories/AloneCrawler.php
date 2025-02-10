@@ -38,7 +38,7 @@ class AloneCrawler implements CategoriesCrawlerContract
         $this->driver = $driver;
     }
 
-    public function run(array $params, $slug, string $job): void
+    public function run(array $params, $slug, string $job): \Throwable|\Exception
     {
         try {
             ini_set('max_execution_time', 0);
@@ -59,7 +59,6 @@ class AloneCrawler implements CategoriesCrawlerContract
             $endAt = Carbon::now();
             $duration = $startedAt->diffInRealSeconds($endAt);
 
-
             $this->driverEntity->setWorkingData([
                 'crawling_type' => 'crawling',
                 'crawling_subject' => 'categories',
@@ -78,6 +77,8 @@ class AloneCrawler implements CategoriesCrawlerContract
             ], $slug);
         } catch (\Throwable $tr) {
             Log::error($tr->getMessage());
+
+            return $tr;
         } finally {
             // Ensure the driver is reset even if an error occurs
             $this->driverEntity->setIsWorking(false);
@@ -134,7 +135,7 @@ class AloneCrawler implements CategoriesCrawlerContract
         }
     }
 
-    public function fetchCategories(string $url, array $params, string $slug): array|\Illuminate\Support\Collection
+    public function fetchCategories(string $url, array $params, string $slug): array|\Illuminate\Support\Collection|\Throwable|\Exception
     {
         $elementExtractor = new ElementExtractorHelper();
         try {
@@ -143,7 +144,7 @@ class AloneCrawler implements CategoriesCrawlerContract
             $driver = $driver->driver;
             $driver->get($url);
 
-            $wait = new WebDriverWait($driver, 10);
+            $wait = new WebDriverWait($driver, 5);
             $wait->until(
                 WebDriverExpectedCondition::presenceOfElementLocated(
                     WebDriverBy::xpath('/html/body/div[contains(@class, "website-wrapper")]/header[1]/div[1]/div[3]/div[1]/div[1]/div[2]/div[1]/div[1]/ul')
@@ -176,14 +177,13 @@ class AloneCrawler implements CategoriesCrawlerContract
             return $categoriesCollection;
         } catch (WebDriverException $e) {
             Log::error("WebDriverException: " . $e->getMessage());
-            $driver = $this->driver->get();
-            $driver->close();
-            $this->driver->close();
-        } catch (\Throwable $tr) {
 
-            throw new \Exception('Error: ' . $tr->getMessage());
+            return $e;
+        } catch (\Throwable $tr) {
+            Log::error("WebDriverException: " . $tr->getMessage());
+
+            return $tr;
         }
-        return [];
     }
 
     public function store(array $data, $slug): int

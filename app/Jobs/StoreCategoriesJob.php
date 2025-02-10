@@ -1,12 +1,14 @@
 <?php
+
 namespace App\Jobs;
 
-use App\Factories\CategoriesCrawlerFactory;
 use Illuminate\Bus\Queueable;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Queue\SerializesModels;
+use Illuminate\Queue\InteractsWithQueue;
+use App\Factories\CategoriesCrawlerFactory;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
-use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Queue\SerializesModels;
 
 class StoreCategoriesJob implements ShouldQueue
 {
@@ -22,16 +24,24 @@ class StoreCategoriesJob implements ShouldQueue
     }
     public function getData()
     {
-        return $this->validated;
+        return array_merge($this->validated, ['generated_slug' => $this->generatedSlug]);
     }
     public function handle(): void
     {
-        ini_set('max_execution_time', 0);
-        $validated = $this->validated;
-        $merchantId = $validated['merchant_id'];
+        try {
+            $validated = $this->validated;
+            $merchantId = $validated['merchant_id'];
 
-        $crawler = (new CategoriesCrawlerFactory())->runFactory($merchantId);
-        $crawler->run($validated, $merchantId, $this->generatedSlug);
+            $crawler = (new CategoriesCrawlerFactory())->runFactory($merchantId);
+            $crawler->run($validated, $merchantId, $this->generatedSlug);
+        } catch (\Throwable $e) {
+            Log::error("Job Failed: " . $e->getMessage(), [
+                'merchant_id' => $merchantId ?? null,
+                'exception' => $e
+            ]);
+
+            // Let Laravel handle retries automatically
+            throw $e;
+        }
     }
-
 }

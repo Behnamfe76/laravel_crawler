@@ -1,6 +1,6 @@
 <script setup>
-import {onBeforeMount, reactive} from "vue";
-import {ArrowPathIcon, PencilIcon} from "@heroicons/vue/24/solid/index.js";
+import { onBeforeMount, reactive } from "vue";
+import { ArrowPathIcon, PencilIcon } from "@heroicons/vue/24/solid/index.js";
 import LoadingSpin from "@/Components/Loadings/LoadingSpin.vue";
 import axios from "axios";
 import GreenBadge from "@/Components/Badges/GreenBadge.vue";
@@ -8,113 +8,7 @@ import RedBadge from "@/Components/Badges/RedBadge.vue";
 import { router } from "@inertiajs/vue3";
 import moment from "moment";
 const props = defineProps(['drivers'])
-const statuses = {active: 'text-green-400 bg-green-400/10', inactive: 'text-rose-400 bg-rose-400/10'}
-const activityItems = [
-    {
-        user: {
-            name: 'Michael Foster',
-            imageUrl:
-                'https://images.unsplash.com/photo-1519244703995-f4e0f30006d5?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-        },
-        commit: '2d89f0c8',
-        branch: 'main',
-        status: 'Completed',
-        duration: '25s',
-        date: '45 minutes ago',
-        dateTime: '2023-01-23T11:00',
-    },
-    {
-        user: {
-            name: 'Lindsay Walton',
-            imageUrl:
-                'https://images.unsplash.com/photo-1517841905240-472988babdf9?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-        },
-        commit: '249df660',
-        branch: 'main',
-        status: 'Completed',
-        duration: '1m 32s',
-        date: '3 hours ago',
-        dateTime: '2023-01-23T09:00',
-    },
-    {
-        user: {
-            name: 'Courtney Henry',
-            imageUrl:
-                'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-        },
-        commit: '11464223',
-        branch: 'main',
-        status: 'Error',
-        duration: '1m 4s',
-        date: '12 hours ago',
-        dateTime: '2023-01-23T00:00',
-    },
-    {
-        user: {
-            name: 'Courtney Henry',
-            imageUrl:
-                'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-        },
-        commit: 'dad28e95',
-        branch: 'main',
-        status: 'Completed',
-        duration: '2m 15s',
-        date: '2 days ago',
-        dateTime: '2023-01-21T13:00',
-    },
-    {
-        user: {
-            name: 'Michael Foster',
-            imageUrl:
-                'https://images.unsplash.com/photo-1519244703995-f4e0f30006d5?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-        },
-        commit: '624bc94c',
-        branch: 'main',
-        status: 'Completed',
-        duration: '1m 12s',
-        date: '5 days ago',
-        dateTime: '2023-01-18T12:34',
-    },
-    {
-        user: {
-            name: 'Courtney Henry',
-            imageUrl:
-                'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-        },
-        commit: 'e111f80e',
-        branch: 'main',
-        status: 'Completed',
-        duration: '1m 56s',
-        date: '1 week ago',
-        dateTime: '2023-01-16T15:54',
-    },
-    {
-        user: {
-            name: 'Michael Foster',
-            imageUrl:
-                'https://images.unsplash.com/photo-1519244703995-f4e0f30006d5?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-        },
-        commit: '5e136005',
-        branch: 'main',
-        status: 'Completed',
-        duration: '3m 45s',
-        date: '1 week ago',
-        dateTime: '2023-01-16T11:31',
-    },
-    {
-        user: {
-            name: 'Whitney Francis',
-            imageUrl:
-                'https://images.unsplash.com/photo-1517365830460-955ce3ccd263?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-        },
-        commit: '5c1fd07f',
-        branch: 'main',
-        status: 'Completed',
-        duration: '37s',
-        date: '2 weeks ago',
-        dateTime: '2023-01-09T08:45',
-    },
-]
+const statuses = { active: 'text-green-400 bg-green-400/10', inactive: 'text-rose-400 bg-rose-400/10' }
 const loadings = reactive({
     status: false,
     isAlive: false,
@@ -147,12 +41,12 @@ const checkWebDriverWorking = async () => {
                 driverPort: item.port,
                 driverHost: item.host
             });
-            if (response.status === 200) {
-                item.isWorking = response.data.isWorking;
-                item.working = response.data.workingSubject;
-                item.duration = response.data.duration;
-                item.lastUsage = response.data.lastUsage;
-            }
+
+            item.isWorking = response.data.isWorking;
+            item.working = response.data.workingSubject;
+            item.duration = response.data.duration;
+            item.lastUsage = response.data.lastUsage;
+
         } catch (error) {
             console.error(error.response.data);
             item.isWorking = false;
@@ -294,11 +188,11 @@ onBeforeMount(() => {
                     <td class="hidden py-4 pr-8 pl-0 text-sm/6 text-gray-400 md:table-cell lg:pr-20">
                         <span v-if="item.duration">
                             {{
-                            item.duration
-                        }}
+                                item.duration
+                            }} s
                         </span>
                         <span v-else>
-                            0s
+                            0 s
                         </span>
                     </td>
                     <!-- Used at -->
@@ -312,11 +206,12 @@ onBeforeMount(() => {
                     </td>
                     <!-- Actions -->
                     <td class="hidden py-4 pr-4 pl-0 text-sm/6 text-gray-400 sm:table-cell sm:pr-6 lg:pr-8">
-                        <PencilIcon @click="router.get(route('dashboard.selenium-drivers.edit', { selenium_driver: item.id}))" class="h-4 w-4 cursor-pointer  hover:text-indigo-500/50 transition-all" />
+                        <PencilIcon
+                            @click="router.get(route('dashboard.selenium-drivers.edit', { selenium_driver: item.id }))"
+                            class="h-4 w-4 cursor-pointer  hover:text-indigo-500/50 transition-all" />
                     </td>
                 </tr>
             </tbody>
         </table>
     </div>
 </template>
-

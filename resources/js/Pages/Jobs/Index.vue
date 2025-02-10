@@ -7,12 +7,21 @@ import PrimaryButtonDark from "@/Components/Buttons/PrimaryButtonDark.vue";
 import ButtonDanger from "@/Components/Buttons/ButtonDanger.vue";
 import axios from "axios";
 import LoadingSpin from "@/Components/Loadings/LoadingSpin.vue";
+import Dialog from 'primevue/dialog';
 import Table from "@/Components/Tables/Table.vue";
+import OptionalTable from "@/Components/Tables/OptionalTable.vue";
 import Pagination from "@/Components/Pagination.vue";
-import { ChevronDownIcon } from '@heroicons/vue/16/solid'
+import { ChevronDownIcon } from '@heroicons/vue/16/solid';
+const visible = ref(false);
 import { split } from 'postcss/lib/list';
-const props = defineProps(['jobs']);
-const tableData = reactive({
+import { data } from 'autoprefixer';
+const props = defineProps(['jobs', 'failedJobs']);
+const exceptionData = reactive({
+    uuid: null,
+    data: null,
+});
+
+const jobsTableData = reactive({
     thead: [
         { title: "id", label: "Id" },
         { title: "queue", label: "Queue" },
@@ -20,6 +29,18 @@ const tableData = reactive({
         { title: "job", label: "Job" },
         { title: "merchant", label: "Merchant" },
         { title: "merchant_url", label: "Merchant Url" },
+        { title: "generated_slug", label: "Generated Slug" },
+    ],
+    tbody: [],
+});
+const failedJobsTableData = reactive({
+    thead: [
+        { title: "id", label: "Id" },
+        { title: "queue", label: "Queue" },
+        { title: "job", label: "Job" },
+        { title: "merchant", label: "Merchant" },
+        { title: "merchant_url", label: "Merchant Url" },
+        { title: "generated_slug", label: "Generated Slug" },
     ],
     tbody: [],
 });
@@ -27,28 +48,66 @@ const tabs = reactive([
     { name: 'Jobs', href: 'jobs', current: true },
     { name: 'Failed Jobs', href: 'failed-jobs', current: false },
 ]);
-
 const changeTab = (tab) => {
     tabs.forEach(item => {
         item.current = item.href === tab.href;
     })
 }
-
-const prepareTableData = () => {
-    tableData.tbody = [];
+const prepareJobsTableData = () => {
+    jobsTableData.tbody = [];
     props.jobs.data.forEach((job) => {
-        tableData.tbody.push({
+        jobsTableData.tbody.push({
             id: job.id,
             queue: job.queue,
             attempts: job.attempts,
             job: job.job,
             merchant: job.data.merchant_id,
             merchant_url: job.data.merchant_url,
+            generated_slug: job.data.generated_slug,
         });
     });
 }
+const prepareFailedJobsTableData = () => {
+    failedJobsTableData.tbody = [];
+    props.failedJobs.data.forEach((job) => {
+        failedJobsTableData.tbody.push({
+            id: job.id,
+            queue: job.queue,
+            job: job.job,
+            merchant: job.data.merchant_id,
+            merchant_url: job.data.merchant_url,
+            generated_slug: job.data.generated_slug,
+            uuid: job.uuid,
+            exception: job.exception,
+
+            operations: [
+                {
+                    color: "#4085DC",
+                    icon: "PencilIcon",
+                    title: "more",
+                    name: "more",
+                },
+                {
+                    color: "#4085DC",
+                    icon: "ArrowPathIcon",
+                    title: "retry",
+                    name: "retry",
+                },
+            ],
+        });
+    });
+}
+function handleTableOperation(event) {
+    if (event[0] === "more") {
+        exceptionData.uuid = event[1].uuid;
+        exceptionData.data = event[1].exception;
+        visible.value = true;
+    }
+}
+
 onBeforeMount(() => {
-    prepareTableData();
+    prepareJobsTableData();
+    prepareFailedJobsTableData();
 });
 
 </script>
@@ -102,8 +161,9 @@ onBeforeMount(() => {
                                 <LoadingSpin v-if="loading" />
                                 <div v-else>
                                     <div class="py-4 text-gray-900 dark:text-gray-100">
-                                        <Table tableTitle="Jobs" tableDescription="Here pending jobs are listed" :tableData="tableData" />
-                                        <pagination :links="props.jobs.links"/>
+                                        <Table tableTitle="Jobs" tableDescription="Here pending jobs are listed"
+                                            :tableData="jobsTableData" />
+                                        <pagination :links="props.jobs.links" />
                                     </div>
                                 </div>
                             </template>
@@ -112,8 +172,29 @@ onBeforeMount(() => {
                                 <LoadingSpin v-if="loading" />
                                 <div v-else>
                                     <div class="py-4 text-gray-900 dark:text-gray-100">
-                                        failed jobs
+                                        <OptionalTable tableTitle="Jobs"
+                                            tableDescription="Here pending failed jobs are listed"
+                                            :tableData="failedJobsTableData" @table-operations="handleTableOperation" />
+                                        <pagination :links="props.failedJobs.links" />
                                     </div>
+
+                                    <Dialog v-model:visible="visible" modal header="Header" :style="{ width: '50rem' }"
+                                        :breakpoints="{ '1199px': '75vw', '575px': '90vw' }">
+                                        <div>
+                                            <h2>
+                                                <div class="text-lg">UUID : </div>
+                                                {{ exceptionData.uuid }}
+                                            </h2>
+                                            <br />
+                                            <h2>
+                                                <div class="text-lg">Exception : </div>
+                                            </h2>
+                                            <p class="mb-8">
+                                               {{ exceptionData.data }}
+                                            </p>
+
+                                        </div>
+                                    </Dialog>
                                 </div>
                             </template>
                         </div>
