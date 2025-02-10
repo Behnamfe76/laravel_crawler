@@ -16,11 +16,11 @@ class SeleniumDriverSeeder extends Seeder
         ],[
             'name' => 'docker node 1',
             'host' => '127.0.0.1',
-            'port' => 4445,
+            'port' => 4441,
         ], [
             'name' => 'docker node 2',
             'host' => '127.0.0.1',
-            'port' => 4446,
+            'port' => 4442,
         ],
     ];
     /**
