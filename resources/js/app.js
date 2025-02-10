@@ -7,7 +7,8 @@ import { createApp, h } from 'vue';
 import { ZiggyVue } from '../../vendor/tightenco/ziggy';
 import VueSweetalert2 from 'vue-sweetalert2';
 import 'sweetalert2/dist/sweetalert2.min.css';
-
+import PrimeVue from 'primevue/config';
+import Aura from '@primevue/themes/aura';
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
 
 createInertiaApp({
@@ -22,6 +23,11 @@ createInertiaApp({
             .use(plugin)
             .use(ZiggyVue)
             .use(VueSweetalert2)
+            .use(PrimeVue, {
+                theme: {
+                    preset: Aura
+                }
+            })
             .mount(el);
     },
     progress: {
