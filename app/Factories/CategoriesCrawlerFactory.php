@@ -4,6 +4,7 @@ namespace App\Factories;
 
 use App\Contracts\CategoriesCrawlerContract;
 use App\Services\Crawlers\Categories\AloneCrawler;
+use App\Services\Crawlers\Categories\HomsaCrawler;
 use App\Services\Crawlers\Categories\GoldijCrawler;
 use App\Services\Crawlers\Categories\DigilandCrawler;
 use App\Services\Crawlers\Categories\RadagoldCrawler;
@@ -25,6 +26,7 @@ class CategoriesCrawlerFactory
             'lavazemkhonegi' => new LavazemKhonegiCrawler(),
             'dgland' => new DigilandCrawler(),
             'eghamat24' => new Eghamat24Crawler(),
+            'homsa' => new HomsaCrawler(),
 
             default => null,
         };
