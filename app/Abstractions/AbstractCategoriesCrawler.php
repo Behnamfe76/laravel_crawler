@@ -2,14 +2,15 @@
 
 namespace App\Abstractions;
 
-use App\Contracts\CategoriesCrawlerContract;
-use App\Entities\SeleniumDriverEntity;
+use Carbon\Carbon;
 use App\Models\SeleniumDriver;
 use App\Services\RabbitMQService;
-use App\Services\Selenium\SeleniumDriverClient;
-use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
 use PhpAmqpLib\Message\AMQPMessage;
+use App\Entities\SeleniumDriverEntity;
+use App\Contracts\CategoriesCrawlerContract;
+use App\Services\Selenium\SeleniumDriverClient;
+use Facebook\WebDriver\Exception\WebDriverException;
 
 abstract class AbstractCategoriesCrawler implements CategoriesCrawlerContract
 {
@@ -36,7 +37,7 @@ abstract class AbstractCategoriesCrawler implements CategoriesCrawlerContract
         $this->driver = $driver;
     }
 
-    public function run(array $params, $slug, string $job): void
+    public function run(array $params, $slug, string $job)
     {
         try {
             ini_set('max_execution_time', 0);
@@ -49,6 +50,10 @@ abstract class AbstractCategoriesCrawler implements CategoriesCrawlerContract
             $this->startedAt = Carbon::now();
 
             $categories = $this->fetchCategories($params['merchant_url'], $params, $slug);
+
+            if ($categories instanceof WebDriverException || $categories instanceof \Throwable) {
+                throw $categories;
+            }
 
             if (!is_array($categories)) {
                 throw new \Exception("Failed to fetch categories.");
@@ -77,6 +82,8 @@ abstract class AbstractCategoriesCrawler implements CategoriesCrawlerContract
             ]], $slug);
         } catch (\Throwable $tr) {
             Log::error($tr->getMessage());
+
+            return $tr;
         } finally {
             // Ensure the driver is reset even if an error occurs
             $this->driverEntity->setIsWorking(false);
