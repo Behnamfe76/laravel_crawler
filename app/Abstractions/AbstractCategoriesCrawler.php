@@ -122,10 +122,25 @@ abstract class AbstractCategoriesCrawler implements CategoriesCrawlerContract
             $driver = $this->driver->get();
             $driver->close();
 
-            return $this->driverEntity->getWorkingData();
+            return [
+                'categories' => $categories,
+                'workingData' => $this->driverEntity->getWorkingData()
+            ];
         } catch (\Throwable $tr) {
             dd($tr->getMessage());
             return $tr;
+        } finally {
+            // Ensure the driver is reset even if an error occurs
+            $this->driverEntity->setIsWorking(false);
+            $this->driverEntity->setDuration($duration);
+            $this->driverEntity->setLastUsage($startedAt);
+
+            if ($this->driver) {
+                $driver = $this->driver->get();
+                if ($driver) {
+                    $driver->close();
+                }
+            }
         }
     }
 
