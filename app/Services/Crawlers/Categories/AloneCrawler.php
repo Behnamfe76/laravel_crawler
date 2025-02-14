@@ -38,7 +38,7 @@ class AloneCrawler implements CategoriesCrawlerContract
         $this->driver = $driver;
     }
 
-    public function run(array $params, $slug, string $job): \Throwable|\Exception
+    public function run(array $params, $slug, string $job): void
     {
         try {
             ini_set('max_execution_time', 0);
@@ -71,14 +71,13 @@ class AloneCrawler implements CategoriesCrawlerContract
                 'job' => $job
             ]);
 
-            $this->store([
+            $this->store([[
                 'categories' => $categories,
-                'reports' => $this->driverEntity->getWorkingData()
-            ], $slug);
+                'reports' => $this->driverEntity->getWorkingData(),
+                'job' => $job
+            ]], $slug);
         } catch (\Throwable $tr) {
             Log::error($tr->getMessage());
-
-            return $tr;
         } finally {
             // Ensure the driver is reset even if an error occurs
             $this->driverEntity->setIsWorking(false);
