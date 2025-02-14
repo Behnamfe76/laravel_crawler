@@ -11,6 +11,7 @@ use App\Services\Crawlers\Categories\DigilandCrawler;
 use App\Services\Crawlers\Categories\RadagoldCrawler;
 use App\Services\Crawlers\Categories\RojashopCrawler;
 use App\Services\Crawlers\Categories\Eghamat24Crawler;
+use App\Services\Crawlers\Categories\JeanswestCrawler;
 use App\Services\Crawlers\Categories\KiaGalleryCrawler;
 use App\Services\Crawlers\Categories\LavazemKhonegiCrawler;
 
@@ -29,6 +30,7 @@ class CategoriesCrawlerFactory
             'eghamat24' => new Eghamat24Crawler(),
             'homsa' => new HomsaCrawler(),
             'banimode' => new BaniModeCrawler(),
+            'jeanswest' => new JeanswestCrawler(),
 
             default => null,
         };
