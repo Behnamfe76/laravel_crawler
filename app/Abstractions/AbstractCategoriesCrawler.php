@@ -4,16 +4,10 @@ namespace App\Abstractions;
 
 use App\Contracts\CategoriesCrawlerContract;
 use App\Entities\SeleniumDriverEntity;
-use App\Helpers\ElementExtractorHelper;
-use App\Helpers\ScraperHelper;
 use App\Models\SeleniumDriver;
 use App\Services\RabbitMQService;
 use App\Services\Selenium\SeleniumDriverClient;
 use Carbon\Carbon;
-use Facebook\WebDriver\Exception\WebDriverException;
-use Facebook\WebDriver\WebDriverBy;
-use Facebook\WebDriver\WebDriverExpectedCondition;
-use Facebook\WebDriver\WebDriverWait;
 use Illuminate\Support\Facades\Log;
 use PhpAmqpLib\Message\AMQPMessage;
 
