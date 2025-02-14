@@ -7,6 +7,7 @@ use App\Services\Crawlers\Categories\AloneCrawler;
 use App\Services\Crawlers\Categories\GoldijCrawler;
 use App\Services\Crawlers\Categories\RadagoldCrawler;
 use App\Services\Crawlers\Categories\RojashopCrawler;
+use App\Services\Crawlers\Categories\KiaGalleryCrawler;
 
 class CategoriesCrawlerFactory
 {
@@ -17,6 +18,7 @@ class CategoriesCrawlerFactory
             'radagold' => new RadagoldCrawler(),
             'goldij' => new GoldijCrawler(),
             'rojashop' => new RojashopCrawler(),
+            'kia-gallery' => new KiaGalleryCrawler(),
 
             default => null,
         };
