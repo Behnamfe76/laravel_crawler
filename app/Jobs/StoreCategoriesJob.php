@@ -9,6 +9,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use App\Factories\CategoriesCrawlerFactory;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
+use Facebook\WebDriver\Exception\WebDriverException;
 
 class StoreCategoriesJob implements ShouldQueue
 {
@@ -33,14 +34,18 @@ class StoreCategoriesJob implements ShouldQueue
             $merchantId = $validated['merchant_id'];
 
             $crawler = (new CategoriesCrawlerFactory())->runFactory($merchantId);
-            $crawler->run($validated, $merchantId, $this->generatedSlug);
+            $result = $crawler->run($validated, $merchantId, $this->generatedSlug);
+
+            if ($result instanceof WebDriverException || $result instanceof \Throwable) {
+                throw $result;
+            }
+            
         } catch (\Throwable $e) {
             Log::error("Job Failed: " . $e->getMessage(), [
                 'merchant_id' => $merchantId ?? null,
                 'exception' => $e
             ]);
 
-            // Let Laravel handle retries automatically
             throw $e;
         }
     }
