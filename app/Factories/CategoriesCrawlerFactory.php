@@ -6,6 +6,7 @@ use App\Contracts\CategoriesCrawlerContract;
 use App\Services\Crawlers\Categories\AloneCrawler;
 use App\Services\Crawlers\Categories\HomsaCrawler;
 use App\Services\Crawlers\Categories\GoldijCrawler;
+use App\Services\Crawlers\Categories\BaniModeCrawler;
 use App\Services\Crawlers\Categories\DigilandCrawler;
 use App\Services\Crawlers\Categories\RadagoldCrawler;
 use App\Services\Crawlers\Categories\RojashopCrawler;
@@ -27,6 +28,7 @@ class CategoriesCrawlerFactory
             'dgland' => new DigilandCrawler(),
             'eghamat24' => new Eghamat24Crawler(),
             'homsa' => new HomsaCrawler(),
+            'banimode' => new BaniModeCrawler(),
 
             default => null,
         };

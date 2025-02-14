@@ -16,6 +16,10 @@ abstract class AbstractCategoriesCrawler implements CategoriesCrawlerContract
     public null|SeleniumDriverClient $driver = null;
     public null|SeleniumDriver $driverEntity = null;
 
+    protected int $duration = 0;
+    protected Carbon $startedAt;
+    protected Carbon $endAt;
+
     public function setup(): void
     {
         $singletonDriver = app(SeleniumDriverEntity::class);
@@ -42,7 +46,7 @@ abstract class AbstractCategoriesCrawler implements CategoriesCrawlerContract
 
             $this->driverEntity->setIsWorking(true);
             $this->driverEntity->setWorkingSubject('categories');
-            $startedAt = Carbon::now();
+            $this->startedAt = Carbon::now();
 
             $categories = $this->fetchCategories($params['merchant_url'], $params, $slug);
 
@@ -50,17 +54,17 @@ abstract class AbstractCategoriesCrawler implements CategoriesCrawlerContract
                 throw new \Exception("Failed to fetch categories.");
             }
 
-            $endAt = Carbon::now();
-            $duration = $startedAt->diffInRealSeconds($endAt);
+            $this->endAt = Carbon::now();
+            $this->duration = $this->startedAt->diffInRealSeconds($this->endAt);
 
             $this->driverEntity->setWorkingData([
                 'crawling_type' => 'crawling',
                 'crawling_subject' => 'categories',
                 'crawling_url' => $params['merchant_url'],
                 'merchant' => $params['merchant_id'],
-                'started_at' => $startedAt,
-                'end_at' => $endAt,
-                'duration' => $duration,
+                'started_at' => $this->startedAt,
+                'end_at' => $this->endAt,
+                'duration' => $this->duration,
                 'numberOfCrawledCategories' => count($categories),
                 'job' => $job
             ]);
@@ -76,8 +80,8 @@ abstract class AbstractCategoriesCrawler implements CategoriesCrawlerContract
         } finally {
             // Ensure the driver is reset even if an error occurs
             $this->driverEntity->setIsWorking(false);
-            $this->driverEntity->setDuration($duration);
-            $this->driverEntity->setLastUsage($startedAt);
+            $this->driverEntity->setDuration($this->duration);
+            $this->driverEntity->setLastUsage($this->startedAt);
 
             if ($this->driver) {
                 $driver = $this->driver->get();
@@ -98,23 +102,27 @@ abstract class AbstractCategoriesCrawler implements CategoriesCrawlerContract
 
             $this->driverEntity->setIsWorking(true);
             $this->driverEntity->setWorkingSubject('categories');
-            $startedAt = Carbon::now();
+            $this->startedAt = Carbon::now();
 
             $categories = $this->fetchCategories($params['merchant_url'], $params, $slug);
 
-            $endAt = Carbon::now();
-            $duration = $startedAt->diffInSeconds($endAt);
-            $this->driverEntity->setDuration($duration);
-            $this->driverEntity->setLastUsage($startedAt);
+            if(empty($categories)){
+                throw new \Exception('failed to crawl Categories');
+            }
+
+            $this->endAt = Carbon::now();
+            $this->duration = $this->startedAt->diffInSeconds($this->endAt);
+            $this->driverEntity->setDuration($this->duration);
+            $this->driverEntity->setLastUsage($this->startedAt);
 
             $this->driverEntity->setWorkingData([
                 'crawling_type' => 'testing',
                 'crawling_subject' => 'categories',
                 'crawling_url' => $params['merchant_url'],
                 'merchant' => $params['merchant_id'],
-                'started_at' => $startedAt,
-                'end_at' => $endAt,
-                'duration' => $duration,
+                'started_at' => $this->startedAt,
+                'end_at' => $this->endAt,
+                'duration' => $this->duration,
                 'numberOfCrawledCategories' => count($categories),
             ]);
 
@@ -127,13 +135,14 @@ abstract class AbstractCategoriesCrawler implements CategoriesCrawlerContract
                 'workingData' => $this->driverEntity->getWorkingData()
             ];
         } catch (\Throwable $tr) {
-            dd($tr->getMessage());
+            Log::error($tr->getMessage());
+
             return $tr;
         } finally {
             // Ensure the driver is reset even if an error occurs
             $this->driverEntity->setIsWorking(false);
-            $this->driverEntity->setDuration($duration);
-            $this->driverEntity->setLastUsage($startedAt);
+            $this->driverEntity->setDuration($this->duration);
+            $this->driverEntity->setLastUsage($this->startedAt);
 
             if ($this->driver) {
                 $driver = $this->driver->get();
