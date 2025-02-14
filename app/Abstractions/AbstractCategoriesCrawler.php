@@ -66,6 +66,7 @@ abstract class AbstractCategoriesCrawler implements CategoriesCrawlerContract
             ]);
 
             $this->store([[
+                'scope' => 'categories',
                 'categories' => $categories,
                 'reports' => $this->driverEntity->getWorkingData(),
                 'job' => $job
