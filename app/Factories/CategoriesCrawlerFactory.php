@@ -17,6 +17,7 @@ use App\Services\Crawlers\Categories\TrendyaabCrawler;
 use App\Services\Crawlers\Categories\BornosModeCrawler;
 use App\Services\Crawlers\Categories\KiaGalleryCrawler;
 use App\Services\Crawlers\Categories\HajiBadoomiCrawler;
+use App\Services\Crawlers\Categories\ShiferShoesCrawler;
 use App\Services\Crawlers\Categories\LavazemKhonegiCrawler;
 
 class CategoriesCrawlerFactory
@@ -39,6 +40,7 @@ class CategoriesCrawlerFactory
             'farako' => new FarakoCrawler(),
             'hajibadoomi' => new HajiBadoomiCrawler(),
             'bornosmode' => new BornosModeCrawler(),
+            'shifershoes' => new ShiferShoesCrawler(),
 
             default => null,
         };
