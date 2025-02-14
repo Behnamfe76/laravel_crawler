@@ -29,7 +29,10 @@ Route::prefix('/dashboard')->name('dashboard.')->group(function () {
     Route::post('/check-driver-working', [SeleniumDriverControllerAlias::class, 'checkDriversWorking'])->name('check-driver-working');
 
     // job routes
-    Route::get('/jobs', [JobController::class, 'index'])->name('jobs.index');
+    Route::prefix('/jobs')->name('jobs.')->group(function () {
+        Route::get('/', [JobController::class, 'index'])->name('index');
+        Route::post('/retry/{job}', [JobController::class, 'retryFailedJob'])->name('retry');
+     });
 })->middleware(['auth']);
 
 Route::middleware('auth')->group(function () {

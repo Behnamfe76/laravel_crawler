@@ -103,6 +103,15 @@ function handleTableOperation(event) {
         exceptionData.data = event[1].exception;
         visible.value = true;
     }
+
+    if (event[0] === "retry") {
+        const jobId = event[1].id;
+        router.post(route('dashboard.jobs.retry', { job: jobId }), {
+            onSuccess: () => {
+                router.reload();
+            }
+        });
+    }
 }
 
 onBeforeMount(() => {

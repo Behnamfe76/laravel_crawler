@@ -4,10 +4,11 @@ namespace App\Http\Controllers\v1;
 
 use App\Models\Job;
 use Inertia\Inertia;
+use App\Models\FailedJobs;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
-use App\Models\FailedJobs;
+use Illuminate\Support\Facades\Queue;
 
 class JobController extends Controller
 {
@@ -81,5 +82,17 @@ class JobController extends Controller
                 'status' => $status,
             ]
         );
+    }
+
+    public function retryFailedJob(FailedJobs $job)
+    {
+        if ($job) {
+            $payload = $job->payload;
+            $command = unserialize($payload['data']['command']);
+
+            Queue::push($command);
+
+            $job->delete();
+        }
     }
 }
