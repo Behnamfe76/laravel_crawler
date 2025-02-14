@@ -7,6 +7,7 @@ use App\Services\Crawlers\Categories\AloneCrawler;
 use App\Services\Crawlers\Categories\HomsaCrawler;
 use App\Services\Crawlers\Categories\FarakoCrawler;
 use App\Services\Crawlers\Categories\GoldijCrawler;
+use App\Services\Crawlers\Categories\MyAjilCrawler;
 use App\Services\Crawlers\Categories\BaniModeCrawler;
 use App\Services\Crawlers\Categories\DigilandCrawler;
 use App\Services\Crawlers\Categories\RadagoldCrawler;
@@ -41,6 +42,7 @@ class CategoriesCrawlerFactory
             'hajibadoomi' => new HajiBadoomiCrawler(),
             'bornosmode' => new BornosModeCrawler(),
             'shifershoes' => new ShiferShoesCrawler(),
+            'myajil' => new MyAjilCrawler(),
 
             default => null,
         };
