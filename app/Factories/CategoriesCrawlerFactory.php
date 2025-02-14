@@ -8,6 +8,7 @@ use App\Services\Crawlers\Categories\GoldijCrawler;
 use App\Services\Crawlers\Categories\DigilandCrawler;
 use App\Services\Crawlers\Categories\RadagoldCrawler;
 use App\Services\Crawlers\Categories\RojashopCrawler;
+use App\Services\Crawlers\Categories\Eghamat24Crawler;
 use App\Services\Crawlers\Categories\KiaGalleryCrawler;
 use App\Services\Crawlers\Categories\LavazemKhonegiCrawler;
 
@@ -23,6 +24,7 @@ class CategoriesCrawlerFactory
             'kia-gallery' => new KiaGalleryCrawler(),
             'lavazemkhonegi' => new LavazemKhonegiCrawler(),
             'dgland' => new DigilandCrawler(),
+            'eghamat24' => new Eghamat24Crawler(),
 
             default => null,
         };
