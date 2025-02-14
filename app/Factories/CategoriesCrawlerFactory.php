@@ -5,6 +5,7 @@ namespace App\Factories;
 use App\Contracts\CategoriesCrawlerContract;
 use App\Services\Crawlers\Categories\AloneCrawler;
 use App\Services\Crawlers\Categories\HomsaCrawler;
+use App\Services\Crawlers\Categories\FarakoCrawler;
 use App\Services\Crawlers\Categories\GoldijCrawler;
 use App\Services\Crawlers\Categories\BaniModeCrawler;
 use App\Services\Crawlers\Categories\DigilandCrawler;
@@ -33,6 +34,7 @@ class CategoriesCrawlerFactory
             'banimode' => new BaniModeCrawler(),
             'jeanswest' => new JeanswestCrawler(),
             'trendyaab' => new TrendyaabCrawler(),
+            'farako' => new FarakoCrawler(),
 
             default => null,
         };
