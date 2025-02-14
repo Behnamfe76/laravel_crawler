@@ -131,4 +131,24 @@ class SeleniumDriverController extends Controller
             'lastUsage' => $driverEntity->getLastUsage(),
         ], 200);
     }
+
+    public function checkSeleniumsStatus() {
+        $reports = [];
+
+        $seleniums = SeleniumDriver::all();
+        foreach ($seleniums as $selenium) {
+            $reports[] = [
+                'selenium' => $selenium,
+                'is_available' => $selenium->alive(),
+                'is_working' => $selenium->getIsWorking(),
+                'working_subject' => $selenium->getWorkingSubject(),
+                'duration' => $selenium->getDuration(),
+                'last_usage' => $selenium->getLastUsage(),
+            ];
+        }
+
+        return response()->json([
+            $reports,
+        ]);
+    }
 }
