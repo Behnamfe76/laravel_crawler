@@ -15,7 +15,8 @@ class JobController extends Controller
     {
         $failedJobs = FailedJobs::paginate(12)->toArray();
         $failedJobsData = array_map(function ($job) {
-            $payload = json_decode($job['payload'], true);
+
+            $payload = $job['payload'];
             return [
                 'id' => $job['id'],
                 'uuid' => $job['uuid'],
@@ -29,7 +30,7 @@ class JobController extends Controller
 
         $jobs = Job::paginate(12)->toArray();
         $jobsData = array_map(function ($job) {
-            $payload = json_decode($job['payload'], true);
+            $payload = $job['payload'];
             return [
                 'id' => $job['id'],
                 'queue' => $job['queue'],
@@ -44,5 +45,41 @@ class JobController extends Controller
             'jobs' => $jobs,
             'failedJobs' => $failedJobs,
         ]);
+    }
+
+    public function checkJobStatus(Request $request)
+    {
+        $request->validate([
+            'generatedSlug' => 'required|string',
+        ]);
+        $generatedSlug = $request->get('generatedSlug');
+
+        // Check if the job is in the queue
+        $queuedJob = Job::all()->first(function ($job) use ($generatedSlug) {
+            $command = unserialize($job->payload['data']['command']);
+            return $command->getData()['generated_slug'] === $generatedSlug;
+        });
+
+        // Check if the job is in the failed jobs table
+        $failedJob = FailedJobs::all()->first(function ($job) use ($generatedSlug) {
+            $command = unserialize($job->payload['data']['command']);
+            return $command->getData()['generated_slug'] === $generatedSlug;
+        });
+
+        // Determine job status
+        if ($queuedJob) {
+            $status = 'queued';
+        } elseif ($failedJob) {
+            $status = 'failed';
+        } else {
+            $status = 'completed or running';
+        }
+
+        return response()->json(
+            [
+                'generated_slug' => $generatedSlug,
+                'status' => $status,
+            ]
+        );
     }
 }
