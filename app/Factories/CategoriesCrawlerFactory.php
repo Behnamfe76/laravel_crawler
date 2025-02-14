@@ -14,6 +14,7 @@ use App\Services\Crawlers\Categories\RojashopCrawler;
 use App\Services\Crawlers\Categories\Eghamat24Crawler;
 use App\Services\Crawlers\Categories\JeanswestCrawler;
 use App\Services\Crawlers\Categories\TrendyaabCrawler;
+use App\Services\Crawlers\Categories\BornosModeCrawler;
 use App\Services\Crawlers\Categories\KiaGalleryCrawler;
 use App\Services\Crawlers\Categories\HajiBadoomiCrawler;
 use App\Services\Crawlers\Categories\LavazemKhonegiCrawler;
@@ -37,6 +38,7 @@ class CategoriesCrawlerFactory
             'trendyaab' => new TrendyaabCrawler(),
             'farako' => new FarakoCrawler(),
             'hajibadoomi' => new HajiBadoomiCrawler(),
+            'bornosmode' => new BornosModeCrawler(),
 
             default => null,
         };
