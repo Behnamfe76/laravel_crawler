@@ -6,6 +6,7 @@ use App\Contracts\CategoriesCrawlerContract;
 use App\Services\Crawlers\Categories\AloneCrawler;
 use App\Services\Crawlers\Categories\GoldijCrawler;
 use App\Services\Crawlers\Categories\RadagoldCrawler;
+use App\Services\Crawlers\Categories\RojashopCrawler;
 
 class CategoriesCrawlerFactory
 {
@@ -15,6 +16,7 @@ class CategoriesCrawlerFactory
             'alone' => new AloneCrawler(),
             'radagold' => new RadagoldCrawler(),
             'goldij' => new GoldijCrawler(),
+            'rojashop' => new RojashopCrawler(),
 
             default => null,
         };
